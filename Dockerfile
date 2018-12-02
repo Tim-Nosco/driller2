@@ -8,9 +8,9 @@ ENV PATH="/home/angr/.virtualenvs/angr/bin:${PATH}"
 
 #fixup some of the out-of-date angr files
 WORKDIR /home/angr/angr-dev
-RUN cd angr && git fetch && git checkout origin/master -- \
-angr/exploration_techniques/tracer.py \
-angr/sim_options.py7
+# RUN cd angr && git fetch && git checkout origin/master -- \
+# angr/exploration_techniques/tracer.py \
+# angr/sim_options.py
 
 #Install the tracer package
 RUN git clone https://github.com/angr/tracer.git tracer
