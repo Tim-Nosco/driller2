@@ -67,14 +67,16 @@ def main():
 				filter_func=valid_transition
 			)
 			#throw away the others
-			logger.debug("Clearing the unsat cache of %d states.", len(simgr.unsat))
+			logger.debug("Clearing the unsat cache of %d states.", 
+				len(simgr.unsat))
 			simgr.move(from_stash='unsat', to_stash='missed')
 		for s in simgr.stashes['diverted']:
 			#pull out a valid stdin and write it to the corpus
 			data = s.posix.stdin.concretize()
 			with open(corpus+md5(data).hexdigest(), 'wb') as f:
 				f.write(data)
-		logger.debug("Clearing the diverted stash of %d states.", len(simgr.stashes['diverted']))
+		logger.debug("Clearing the diverted stash of %d states.", 
+			len(simgr.stashes['diverted']))
 		simgr.move(from_stash='diverted', to_stash='processed')
 	hook(locals())
 

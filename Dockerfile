@@ -25,6 +25,9 @@ RUN chmod +x /home/angr/.virtualenvs/angr/lib/python3.6/site-packages/shellphish
 
 WORKDIR /job
 COPY . .
+USER root
+RUN chown -R angr:angr /job
+USER angr
 
 ENTRYPOINT python executor.py
 #ENV PATH="${ORIG_PATH}"
