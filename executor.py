@@ -2,6 +2,7 @@ import os
 import angr, claripy
 import logging
 from hashlib import md5
+import time
 
 root_logger = logging.getLogger()
 root_logger.setLevel(logging.WARNING)
@@ -14,6 +15,10 @@ def hook(l=None):
 	import IPython
 	IPython.embed(banner1="", confirm_exit=False)
 	exit(0)
+
+def update_avg(start, cma, n):
+	xnp1 = time.time() - start
+	return cma+((xnp1 - cma)/(n+1)), n+1
 
 def main():
 	base_path = "/job/target/"
@@ -45,12 +50,19 @@ def main():
 	#initialize the manager
 	simgr = p.factory.simgr(s, save_unsat=True, auto_drop={'missed', 'processed'})
 	#a state may be unsat only because of the file constraint
+	avg_extra_sat = (0.0, 0)
 	def valid_transition(state):
+		nonlocal avg_extra_sat
 		#TODO: checkbitmap for necessity
 		logger.debug("Checking if %s is a valid transition.", state)
+		start = time.time()
 		state.preconstrainer.remove_preconstraints()
-		return state.satisfiable()
+		r = state.satisfiable()
+		avg_extra_sat = update_avg(start, *avg_extra_sat)
+		return r
 	#while there is a state in active
+	avg_step = (0.0, 0)
+	total_time = time.time()
 	while simgr.active:
 		#make sure we're on a reasonable path
 		if len(simgr.active) > 1:
@@ -59,7 +71,9 @@ def main():
 		#step the active state
 		logger.debug("Stepping %s", simgr.one_active)
 		logger.debug("Start: %s", simgr)
+		start = time.time()
 		simgr.step()
+		avg_step = update_avg(start, *avg_step)
 		logger.debug("End:   %s", simgr)
 		#if states were unsat, check if they would have been valid
 		#without the stdin constraints
@@ -84,7 +98,13 @@ def main():
 		logger.debug("Clearing the diverted stash of %d states.", 
 			len(simgr.stashes['diverted']))
 		simgr.move(from_stash='diverted', to_stash='processed')
-	hook(locals())
+	total_time = time.time() - total_time
+	print("Time stepping concrete state: %.02fs %s" % (
+		avg_step[0]*avg_step[1], avg_step))
+	print("Time from extra sat calls:    %.02fs %s" % (
+		avg_extra_sat[0]*avg_extra_sat[1], avg_extra_sat))
+	print("Total runtime:                %.02fs" % total_time)
+	#hook(locals())
 
 
 if __name__ == '__main__':
