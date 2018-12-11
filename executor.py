@@ -73,7 +73,9 @@ def main():
 		for s in simgr.stashes['diverted']:
 			#pull out a valid stdin and write it to the corpus
 			data = s.posix.stdin.concretize()
-			with open(corpus+md5(data).hexdigest(), 'wb') as f:
+			name = corpus+md5(data).hexdigest()
+			logger.info("Saving %d bytes to %s", len(data), name)
+			with open(name, 'wb') as f:
 				f.write(data)
 		logger.debug("Clearing the diverted stash of %d states.", 
 			len(simgr.stashes['diverted']))
