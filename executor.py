@@ -1,5 +1,5 @@
 import os
-import angr, claripy, tracer
+import angr, claripy
 import logging
 from hashlib import md5
 
