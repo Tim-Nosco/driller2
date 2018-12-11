@@ -1,10 +1,11 @@
 import os
 import angr, claripy, tracer
 import logging
+from hashlib import md5
 
 root_logger = logging.getLogger()
 root_logger.setLevel(logging.INFO)
-logger = logging.getLogger('executor.py')
+logger = logging.getLogger(name=__name__)
 
 def hook(l=None):
 	#useful for testing
@@ -14,55 +15,70 @@ def hook(l=None):
 	IPython.embed(banner1="", confirm_exit=False)
 	exit(0)
 
-def do_trace(proj,input_data,**kwargs):
-	#Function taken from: https://github.com/angr/angr/blob/master/tests/common.py#L19
-	logging.getLogger("tracer").setLevel('DEBUG')
-	runner = tracer.QEMURunner(project=proj, input=input_data, **kwargs)
-	#Modify the trace so the entrypoint matches the project's
-	#workaround https://github.com/angr/angr/blame/master/angr/exploration_techniques/tracer.py#L74
-	#	raise AngrTracerError("Could not identify program entry point in trace!")
-	difference = runner.trace[0]-proj.entry
-	logger.info("Detected difference of %x", difference)
-	for i, e in enumerate(runner.trace):
-		runner.trace[i] -= difference
-	return (runner.trace, runner.magic, runner.crash_mode, runner.crash_addr)
-
-def tracer_linux(p, stdin):
-	#Function taken from: https://github.com/angr/angr/blob/master/tests/test_tracer.py#L26
-	trace, _, crash_mode, crash_addr = do_trace(p, stdin, ld_linux=p.loader.linux_loader_object.binary, library_path=set(os.path.dirname(obj.binary) for obj in p.loader.all_elf_objects), record_stdout=True)
-	s = p.factory.full_init_state(mode='tracing', stdin=angr.SimFileStream)
-	s.preconstrainer.preconstrain_file(stdin, s.posix.stdin, True)
-
-	simgr = p.factory.simulation_manager(s, hierarchy=False, save_unconstrained=crash_mode)
-	t = angr.exploration_techniques.Tracer(trace)
-	simgr.use_technique(t)
-	simgr.use_technique(angr.exploration_techniques.Oppologist())
-
-	return simgr, t
-
 def main():
 	base_path = "/job/target/"
 	ld_path  = base_path+"lib"
 	#inputs: CMD, input stream, input testcase filename
 	CMD = [base_path+"CGC_Hangman_Game"]
-	input_testcase = base_path+"corpus/0"
+	corpus = base_path+"corpus/"
+	input_testcase = corpus+"0"
 
 	#read testcase
 	with open(input_testcase, "rb") as f:
 		input_data = f.read()
+	logger.info("Read %d bytes from testcase: %s.", len(input_data), input_testcase)
+
 	#load the binary with the specified libraries
-	p = angr.Project(CMD[0], except_missing_libs=True, 
-							 ld_path=(ld_path))
-
-	logging.getLogger("angr.exploration_techniques.driller_core").setLevel('DEBUG')
-	#https://github.com/angr/angr/blob/master/tests/test_driller_core.py#L28
-	simgr, t = tracer_linux(p, input_data)
-	d = angr.exploration_techniques.DrillerCore(t._trace)
-	simgr.use_technique(d)
-
+	logger.debug("Creating angr project.")
+	p = angr.Project(CMD[0], 
+		except_missing_libs=True, 
+		ld_path=(ld_path))
+	#create the entry state
+	logger.debug("Initializing entry state.")
+	s = p.factory.full_init_state(
+		mode="tracing",
+		args=CMD,
+		stdin=angr.SimFileStream
+	)
+	#assert the current testcase
+	s.preconstrainer.preconstrain_file(input_data,s.posix.stdin,True)
+	#initialize the manager
+	simgr = p.factory.simgr(s, save_unsat=True, auto_drop={'missed', 'processed'})
+	#a state may be unsat only because of the file constraint
+	def valid_transition(state):
+		#TODO: checkbitmap for necessity
+		logger.debug("Checking if %s is a valid transition.", state)
+		state.preconstrainer.remove_preconstraints()
+		return state.satisfiable()
+	#while there is a state in active
+	while simgr.active:
+		#make sure we're on a reasonable path
+		if len(simgr.active) > 1:
+			logger.critical("More than one active state.")
+			raise("Too many active states.")
+		#step the active state
+		simgr.step()
+		#if states were unsat, check if they would have been valid
+		#without the stdin constraints
+		if simgr.unsat:
+			#save valid states to diverted
+			simgr.move(
+				from_stash='unsat', to_stash='diverted',
+				filter_func=valid_transition
+			)
+			#throw away the others
+			logger.debug("Clearing the unsat cache of %d states.", len(simgr.unsat))
+			simgr.move(from_stash='unsat', to_stash='missed')
+		for s in simgr.stashes['diverted']:
+			#pull out a valid stdin and write it to the corpus
+			data = s.posix.stdin.concretize()
+			with open(corpus+md5(data).hexdigest(), 'wb') as f:
+				f.write(data)
+		logger.debug("Clearing the diverted stash of %d states.", len(simgr.stashes['diverted']))
+		simgr.move(from_stash='diverted', to_stash='processed')
 	hook(locals())
-	#Fails to run simgr.run()
 
 
 if __name__ == '__main__':
+	logger.setLevel(logging.DEBUG)
 	main()

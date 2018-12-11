@@ -8,4 +8,4 @@ clean:
 	~/docker_clean.sh || true
 
 test: build
-	docker run -it --rm -v ${PWD}:/job driller2
+	docker run -it --privileged --rm -v ${PWD}:/job --entrypoint bash driller2

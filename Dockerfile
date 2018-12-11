@@ -1,5 +1,7 @@
 FROM angr/angr
 
+RUN apt update && apt install -y strace
+
 USER angr
 
 #setup virtenv so we can install things
@@ -24,6 +26,6 @@ RUN chmod +x /home/angr/.virtualenvs/angr/lib/python3.6/site-packages/shellphish
 WORKDIR /job
 COPY . .
 
-# ENTRYPOINT python executor.py
-ENV PATH="${ORIG_PATH}"
-ENTRYPOINT bash
+ENTRYPOINT python executor.py
+#ENV PATH="${ORIG_PATH}"
+#ENTRYPOINT bash
