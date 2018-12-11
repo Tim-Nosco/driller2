@@ -24,10 +24,8 @@ RUN chmod +x /home/angr/.virtualenvs/angr/lib/python3.6/site-packages/shellphish
 # RUN cp -r tracer /home/angr/.virtualenvs/angr/lib/python3.6/site-packages/
 
 WORKDIR /job
-COPY . .
-USER root
-RUN chown -R angr:angr /job
-USER angr
+COPY --chown=angr:angr . .
+RUN cd target && tar xvf target.tar.gz
 
 ENTRYPOINT python executor.py
 #ENV PATH="${ORIG_PATH}"
