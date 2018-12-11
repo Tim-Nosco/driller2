@@ -4,7 +4,7 @@ import logging
 from hashlib import md5
 
 root_logger = logging.getLogger()
-root_logger.setLevel(logging.INFO)
+root_logger.setLevel(logging.WARNING)
 logger = logging.getLogger(name=__name__)
 
 def hook(l=None):
@@ -57,7 +57,10 @@ def main():
 			logger.critical("More than one active state.")
 			raise("Too many active states.")
 		#step the active state
+		logger.debug("Stepping %s", simgr.one_active)
+		logger.debug("Start: %s", simgr)
 		simgr.step()
+		logger.debug("End:   %s", simgr)
 		#if states were unsat, check if they would have been valid
 		#without the stdin constraints
 		if simgr.unsat:
@@ -71,10 +74,11 @@ def main():
 				len(simgr.unsat))
 			simgr.move(from_stash='unsat', to_stash='missed')
 		for s in simgr.stashes['diverted']:
+			logger.info("Generated a new path!")
 			#pull out a valid stdin and write it to the corpus
 			data = s.posix.stdin.concretize()
 			name = corpus+md5(data).hexdigest()
-			logger.info("Saving %d bytes to %s", len(data), name)
+			logger.debug("Saving %d bytes to %s", len(data), name)
 			with open(name, 'wb') as f:
 				f.write(data)
 		logger.debug("Clearing the diverted stash of %d states.", 
