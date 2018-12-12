@@ -27,6 +27,7 @@ def main():
 	CMD = [base_path+"CGC_Hangman_Game"]
 	corpus = base_path+"corpus/"
 	input_testcase = corpus+"0"
+	id_counter=0
 
 	#read testcase
 	with open(input_testcase, "rb") as f:
@@ -91,7 +92,8 @@ def main():
 			logger.info("Generated a new path!")
 			#pull out a valid stdin and write it to the corpus
 			data = s.posix.stdin.concretize()
-			name = corpus+md5(data).hexdigest()
+			name = "%s%03d_%s"%(corpus,id_counter,md5(data).hexdigest())
+			id_counter+=1
 			logger.debug("Saving %d bytes to %s", len(data), name)
 			with open(name, 'wb') as f:
 				f.write(data)
@@ -104,6 +106,7 @@ def main():
 	print("Time from extra sat calls:    %.02fs %s" % (
 		avg_extra_sat[0]*avg_extra_sat[1], avg_extra_sat))
 	print("Total runtime:                %.02fs" % total_time)
+	simgr.active
 	#hook(locals())
 
 
