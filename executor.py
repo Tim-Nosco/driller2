@@ -56,7 +56,7 @@ def main(command, corpus, testcase, ld_path):
 			logger.info("Generated a new path!")
 			#pull out a valid stdin and write it to the corpus
 			data = state.posix.stdin.concretize()
-			name = "%s/id:%06d"%(corpus,counter,md5(data).hexdigest())
+			name = "%s/id:%06d_%s"%(corpus,counter,md5(data).hexdigest())
 			logger.debug("Saving %d bytes to %s", len(data), name)
 			with open(name, 'wb') as f:
 				f.write(data)
@@ -76,7 +76,7 @@ def main(command, corpus, testcase, ld_path):
 		logger.debug("Start: %s", simgr)
 		start = time.time()
 		simgr.step()
-		avg_step = update_avg(start, *avg_step)
+		avg_step = update_avg(time.time()-start, *avg_step)
 		logger.debug("End:   %s", simgr)
 		#if states were unsat, check if they would have been valid
 		#without the stdin constraints
@@ -101,14 +101,15 @@ def main(command, corpus, testcase, ld_path):
 
 if __name__ == '__main__':
 	logger.setLevel(logging.DEBUG)
+	corpus = "/dev/shm/corpus"
 	try:
 		logger.debug("Creating output directory")
-		os.mkdir("/dev/shm/corpus/")
+		os.mkdir(corpus)
 	except FileExistsError as e:
 		logger.warning("Corpus folder already exists")
 	main(
 		["/job/target/CGC_Hangman_Game"], 
-		"/dev/shm/corpus/", 
+		corpus, 
 		"/job/target/corpus/0",
 		"/job/target/lib"
 	)
