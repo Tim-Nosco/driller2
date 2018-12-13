@@ -1,3 +1,4 @@
 *.swp
 target/CGC_Hangman_Game
 target/lib/*
+target/corpus/id*

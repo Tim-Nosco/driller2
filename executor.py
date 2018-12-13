@@ -66,38 +66,36 @@ def main(command, corpus, testcase, ld_path):
 	#while there is a state in active
 	avg_step = (0.0, 0)
 	total_time = time.time()
-	processes = []
-	while simgr.active:
-		#make sure we're on a reasonable path
-		if len(simgr.active) > 1:
-			logger.critical("More than one active state.")
-			raise("Too many active states.")
-		#step the active state
-		logger.debug("Stepping %s", simgr.one_active)
-		logger.debug("Start: %s", simgr)
-		start = time.time()
-		simgr.step()
-		avg_step = update_avg(time.time()-start, *avg_step)
-		logger.debug("End:   %s", simgr)
-		#if states were unsat, check if they would have been valid
-		#without the stdin constraints
-		for s in simgr.unsat:
-			p = mp.Process(target=valid_transition, 
-				args=(s,id_counter))
-			p.start()
-			processes.append(p)
-			id_counter += 1
-		#throw away the others
-		logger.debug("Clearing the unsat cache of %d states.", 
-			len(simgr.unsat))
-		simgr.drop(stash='unsat')
-	for p in processes:
-		p.join()
+	#use a pool of process to limit the total processes spawned
+	with mp.Pool(processes=4) as pool:
+		#explore the concrete path
+		while simgr.active:
+			#make sure we're on a reasonable path
+			if len(simgr.active) > 1:
+				logger.critical("More than one active state.")
+				raise("Too many active states.")
+			#step the active state
+			logger.debug("Stepping %s", simgr.one_active)
+			logger.debug("Start: %s", simgr)
+			start = time.time()
+			simgr.step()
+			avg_step = update_avg(time.time()-start, *avg_step)
+			logger.debug("End:   %s", simgr)
+			#if states were unsat, check if they would have been valid
+			#without the stdin constraints
+			for s in simgr.unsat:
+				#this check can be done in an independant process
+				pool.apply_async(valid_transition, (s,id_counter))
+				id_counter += 1
+			#throw away the unneeded unsat states
+			logger.debug("Clearing the unsat cache of %d states.", 
+				len(simgr.unsat))
+			simgr.drop(stash='unsat')
+	#Print some timing stuff
 	total_time = time.time() - total_time
 	print("Time stepping concrete state: %.02fs %s" % (
 		avg_step[0]*avg_step[1], avg_step))
 	print("Total runtime:                %.02fs" % total_time)
-	#hook(locals())
 
 def _set_log_level(level):
 	#interpret specified level
