@@ -1,10 +1,11 @@
+#!env python3
 import os
-import angr, claripy
+import angr
 import logging
 from hashlib import md5
 import time
 import multiprocessing as mp
-from functools import partial
+import argparse, shlex
 
 root_logger = logging.getLogger()
 root_logger.setLevel(logging.WARNING)
@@ -98,18 +99,43 @@ def main(command, corpus, testcase, ld_path):
 	print("Total runtime:                %.02fs" % total_time)
 	#hook(locals())
 
+def _set_log_level(level):
+	#interpret specified level
+	if not hasattr(logging,level):
+		logger.error("Invalid log level specified: %s", level)
+		logger.error("Using INFO.")
+		level = "INFO"
+	#set the level
+	logger.setLevel(getattr(logging,level))
 
 if __name__ == '__main__':
-	logger.setLevel(logging.DEBUG)
-	corpus = "/dev/shm/corpus"
+	parser = argparse.ArgumentParser('executor.py', 
+		description="Concollic executor emulating driller.")
+
+	parser.add_argument("-v", "--log-level", default="INFO", 
+		help="Set the log level.", dest="level",
+		choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"])
+	
+	parser.add_argument("-l", "--ld-path")
+	
+	parser.add_argument("-i", "--input-file", required=True)
+	
+	parser.add_argument("-o", "--corpus", default="/dev/shm/corpus")
+
+	parser.add_argument("command", nargs=argparse.REMAINDER)
+
+	args=parser.parse_args()
+
+	_set_log_level(args.level)
+
 	try:
-		logger.debug("Creating output directory")
-		os.mkdir(corpus)
+		logger.debug("Creating output directory: %s", args.corpus)
+		os.mkdir(args.corpus)
 	except FileExistsError as e:
 		logger.warning("Corpus folder already exists")
 	main(
-		["/job/target/CGC_Hangman_Game"], 
-		corpus, 
-		"/job/target/corpus/0",
-		"/job/target/lib"
+		args.command, 
+		args.corpus, 
+		args.input_file,
+		args.ld_path
 	)
