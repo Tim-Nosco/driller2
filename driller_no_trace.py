@@ -109,6 +109,7 @@ def main(command, corpus, testcase, ld_path):
 	print("Time stepping concrete state: %.02fs %s" % (
 		d.avg_step[0]*d.avg_step[1], d.avg_step))
 	print("Total runtime:                %.02fs" % total_time)
+	return simgr
 
 def _set_log_level(level):
 	#interpret specified level
