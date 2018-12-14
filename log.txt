@@ -1,0 +1,374 @@
+corpus/0
+00000000: 4841 4e47 454d 4849 4748 210a 4141 4141  HANGEMHIGH!.AAAA
+00000010: 610a 620a 630a                           a.b.c.
+Password: Welcome to Hangman Blondie!
+Choose your word seed. Please send 4 bytes
+
+   ---
+   | |
+     |
+     |
+     |
+     |
+ -----
+ |   |
+
+used:      ""
+available: "abcdefghijklmnopqrstuvwxyz"
+
+current: _________
+
+Your guess: 
+Miraculously, you have manage to prolong Tuco's life.
+
+   ---
+   | |
+     |
+     |
+     |
+     |
+ -----
+ |   |
+
+used:      "a"
+available: "bcdefghijklmnopqrstuvwxyz"
+
+current: _____a___
+
+Your guess: 
+Haha, Tuco is feeling that rope a little more!
+
+   ---
+   | |
+   O |
+     |
+     |
+     |
+ -----
+ |   |
+
+used:      "ab"
+available: "cdefghijklmnopqrstuvwxyz"
+
+current: _____a___
+
+Your guess: 
+Miraculously, you have manage to prolong Tuco's life.
+
+   ---
+   | |
+   O |
+     |
+     |
+     |
+ -----
+ |   |
+
+used:      "abc"
+available: "defghijklmnopqrstuvwxyz"
+
+current: _____a__c
+
+Your guess: Invalid guess, game over.
+Play again (y/n)? 
+=====================
+corpus/id:000001_7f8d727980919ec7d8cc277072edfa1f
+00000000: 0a00 0000 0000 0000 0000 0000 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000005_dbaa05ced414e46c614ec20bfea8b63d
+00000000: f50a 0000 0000 0000 0000 0000 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000009_2b330f772a166bd9d7eaa4117ce68bdb
+00000000: 0000 0a00 0000 0000 0000 0000 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000009_3e0414914e0b3150c91c49ac65271b46
+00000000: f5f5 0a00 0000 0000 0000 0000 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000013_c6a36fc51dcd2be158c1143567420c87
+00000000: f5f5 f50a 0000 0000 0000 0000 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000017_ce103345fc4af69196510a7b5502070a
+00000000: 0000 0000 0a00 0000 0000 0000 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000017_f8801f51487dc65645edeecd1939f92d
+00000000: f5f5 f5f5 0a00 0000 0000 0000 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000021_11a0c5e3f1bf83390d51ad50de8f0352
+00000000: f5f5 f5f5 f50a 0000 0000 0000 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000025_76232a27eb4f209a65de0d6640599a01
+00000000: f5f5 f5f5 f5f5 0a00 0000 0000 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000029_f591268d86eba86f09faaef3c8e08767
+00000000: f5f5 f5f5 f5f5 f50a 0000 0000 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000033_b7900ff4ca9a8efc9b1bdeb6a334b401
+00000000: f5f5 f5f5 f5f5 f5f5 0a00 0000 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000037_9bff5197129c7b4341ef53f3dd94562e
+00000000: f5f5 f5f5 f5f5 f5f5 f50a 0000 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000041_e3f7fe5175a5a694e73f0aa504189e0d
+00000000: f5f5 f5f5 f5f5 f5f5 f5f5 0a00 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000045_05dd47cfed27c2bfa335a38f5aad1e9f
+00000000: f5f5 f5f5 f5f5 f5f5 f5f5 f5f5 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000047_4223fd0d7368bd26fdd1d429e70ed5f6
+00000000: 00f5 f5f5 f5f5 f5f5 f5f5 f50a 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000049_883703d5f358abdaf46d116bd3371e76
+00000000: f100 f5f5 f5f5 f5f5 f5f5 f50a 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000051_8968541e272d36780580d0e8ab6c7665
+00000000: f1fb 00f5 f5f5 f5f5 f5f5 f50a 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000053_d939cced813f0b082da2ce1c045c2c74
+00000000: f1fb fb00 f5f5 f5f5 f5f5 f50a 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000055_a37c009ae72b8c031714954cdc3826bf
+00000000: f1fb fbfb 00f5 f5f5 f5f5 f50a 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000057_965e1d25dc6b283ced3005681dd4ef64
+00000000: f1fb fbfb f100 f5f5 f5f5 f50a 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000059_29036cf8391eda1a37e1146f2c21195f
+00000000: f1fb fbfb f1fb 00f5 f5f5 f50a 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000061_8c3ae48d15496b32db7a1052bfd5d99e
+00000000: f1fb fbfb f1fb fb00 f5f5 f50a 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000063_f34d02ce77dec12606155645b913f6e3
+00000000: f1fb fbfb f1fb fbfb 00f5 f50a 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000065_b012e554ff68a3454b1524ddba874b18
+00000000: f1fb fbfb f1fb fbfb f100 f50a 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000067_08db513460299a9c8b60de666f4dd704
+00000000: f1fb fbfb f1fb fbfb f1fb 000a 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000073_b7037dc6fdfaeb143fcb9abc87a57fc7
+00000000: fdfb fbfb f1fb fbfb f1fb fb0a 0000 0000  ................
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000076_441ef6ad6f9169d6c7e494898dfac85d
+00000000: 48f5 fbfb f1fb fbfb f1fb fb0a 0000 0000  H...............
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000079_592b44e4bb63ae843319643a21dcef8d
+00000000: 4841 fffb f1fb fbfb f1fb fb0a 0000 0000  HA..............
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000082_e3a961fcb76fde47fccbee5361e31208
+00000000: 4841 4ef7 f1fb fbfb f1fb fb0a 0000 0000  HAN.............
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000085_5e9fff8c037e73542fc0a548cbd8c1fb
+00000000: 4841 4e47 b0fb fbfb f1fb fb0a 0000 0000  HANG............
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000088_386c638a0af8fffc811d9bfff9eda502
+00000000: 4841 4e47 45b0 fbfb f1fb fb0a 0000 0000  HANGE...........
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000091_a043ec456a3760d9d585400d899dc3b0
+00000000: 4841 4e47 454d b5fb f1fb fb0a 0000 0000  HANGEM..........
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000094_97f3a476807f94f5af73ae6cd5fb41e4
+00000000: 4841 4e47 454d 48b4 f1fb fb0a 0000 0000  HANGEMH.........
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000097_d62ca93eef64b8f3926df33dd8b9e749
+00000000: 4841 4e47 454d 4849 bafb fb0a 0000 0000  HANGEMHI........
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000100_8113ecf4557487682df189af4f4156c6
+00000000: 4841 4e47 454d 4849 47bf fb0a 0000 0000  HANGEMHIG.......
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000103_1b18045ab80fb0212aa1d799a7f98724
+00000000: 4841 4e47 454d 4849 4748 fe0a 0000 0000  HANGEMHIGH......
+00000010: 0000 0000 0000                           ......
+Password: 
+=====================
+corpus/id:000157_63ecfcc624e0341a18e06b76bed90d05
+00000000: 4841 4e47 454d 4849 4748 210a 6caf e78b  HANGEMHIGH!.l...
+00000010: 00f5 0000 0000                           ......
+Password: Welcome to Hangman Blondie!
+Choose your word seed. Please send 4 bytes
+
+   ---
+   | |
+     |
+     |
+     |
+     |
+ -----
+ |   |
+
+used:      ""
+available: "abcdefghijklmnopqrstuvwxyz"
+
+current: _________
+
+Your guess: Invalid guess, game over.
+Play again (y/n)? 
+=====================
+corpus/id:000417_a2754ff12169794d75f99be6380a8048
+00000000: 4841 4e47 454d 4849 4748 210a 6caf e78b  HANGEMHIGH!.l...
+00000010: 610a 00f5 0000                           a.....
+Password: Welcome to Hangman Blondie!
+Choose your word seed. Please send 4 bytes
+
+   ---
+   | |
+     |
+     |
+     |
+     |
+ -----
+ |   |
+
+used:      ""
+available: "abcdefghijklmnopqrstuvwxyz"
+
+current: _________
+
+Your guess: 
+Miraculously, you have manage to prolong Tuco's life.
+
+   ---
+   | |
+     |
+     |
+     |
+     |
+ -----
+ |   |
+
+used:      "a"
+available: "bcdefghijklmnopqrstuvwxyz"
+
+current: _____a___
+
+Your guess: Invalid guess, game over.
+Play again (y/n)? 
+=====================
+corpus/id:000676_e5930a6855aa32995e401f4395cb78f7
+00000000: 4841 4e47 454d 4849 4748 210a 6caf e78b  HANGEMHIGH!.l...
+00000010: 610a 620a 00f5                           a.b...
+Password: Welcome to Hangman Blondie!
+Choose your word seed. Please send 4 bytes
+
+   ---
+   | |
+     |
+     |
+     |
+     |
+ -----
+ |   |
+
+used:      ""
+available: "abcdefghijklmnopqrstuvwxyz"
+
+current: _________
+
+Your guess: 
+Miraculously, you have manage to prolong Tuco's life.
+
+   ---
+   | |
+     |
+     |
+     |
+     |
+ -----
+ |   |
+
+used:      "a"
+available: "bcdefghijklmnopqrstuvwxyz"
+
+current: _____a___
+
+Your guess: 
+Haha, Tuco is feeling that rope a little more!
+
+   ---
+   | |
+   O |
+     |
+     |
+     |
+ -----
+ |   |
+
+used:      "ab"
+available: "cdefghijklmnopqrstuvwxyz"
+
+current: _____a___
+
+Your guess: Invalid guess, game over.
+Play again (y/n)? 
+=====================
