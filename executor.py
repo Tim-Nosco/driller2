@@ -22,6 +22,21 @@ def hook(l=None):
 def update_avg(xnp1, cma, n):
 	return cma+((xnp1 - cma)/(n+1)), n+1
 
+def valid_transition(state,counter,corpus,infile):
+	#TODO: checkbitmap for necessity
+	logger.debug("Checking if %s is a valid transition.", state)
+	state.preconstrainer.remove_preconstraints()
+	r = state.satisfiable()
+	if r:
+		logger.info("Generated a new path!")
+		#pull out a valid stdin and write it to the corpus
+		data = infile.concretize()
+		name = "%s/id:%06d_%s"%(corpus,counter,md5(data).hexdigest())
+		logger.debug("Saving %d bytes to %s", len(data), name)
+		with open(name, 'wb') as f:
+			f.write(data)
+	return r
+
 def main(command, corpus, testcase, ld_path):
 	#read testcase
 	with open(testcase, "rb") as f:
@@ -47,22 +62,6 @@ def main(command, corpus, testcase, ld_path):
 	#a state may be unsat only because of the file constraint
 	#use an id to produce reasonable file names
 	id_counter = 0
-	def valid_transition(state,counter):
-		#TODO: checkbitmap for necessity
-		logger.debug("Checking if %s is a valid transition.", state)
-		start = time.time()
-		state.preconstrainer.remove_preconstraints()
-		r = state.satisfiable()
-		if r:
-			logger.info("Generated a new path!")
-			#pull out a valid stdin and write it to the corpus
-			data = state.posix.stdin.concretize()
-			name = "%s/id:%06d_%s"%(corpus,counter,md5(data).hexdigest())
-			logger.debug("Saving %d bytes to %s", len(data), name)
-			with open(name, 'wb') as f:
-				f.write(data)
-		return r
-
 	#while there is a state in active
 	avg_step = (0.0, 0)
 	total_time = time.time()
@@ -85,12 +84,14 @@ def main(command, corpus, testcase, ld_path):
 			#without the stdin constraints
 			for s in simgr.unsat:
 				#this check can be done in an independant process
-				pool.apply_async(valid_transition, (s,id_counter))
+				pool.apply_async(valid_transition, 
+					(s,id_counter,corpus,s.posix.stdin))
 				id_counter += 1
-			#throw away the unneeded unsat states
-			logger.debug("Clearing the unsat cache of %d states.", 
-				len(simgr.unsat))
-			simgr.drop(stash='unsat')
+			if simgr.unsat:
+				#throw away the unneeded unsat states
+				logger.debug("Clearing the unsat cache of %d states.", 
+					len(simgr.unsat))
+				simgr.drop(stash='unsat')
 	#Print some timing stuff
 	total_time = time.time() - total_time
 	print("Time stepping concrete state: %.02fs %s" % (

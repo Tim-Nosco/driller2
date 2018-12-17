@@ -1,5 +1,5 @@
 all: build
-	docker run -it --rm -v /dev/shm:/dev/shm driller2 -v DEBUG -i /job/target/corpus/0 -l /job/target/lib /job/target/CGC_Hangman_Game
+	docker run -it --rm -v /dev/shm:/dev/shm driller2 -v INFO -i /job/target/corpus/0 -l /job/target/lib /job/target/CGC_Hangman_Game
 	cp /dev/shm/corpus/* ./target/corpus
 
 log: build
