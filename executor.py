@@ -23,6 +23,7 @@ def update_avg(xnp1, cma, n):
 	return cma+((xnp1 - cma)/(n+1)), n+1
 
 def valid_transition(state,counter,corpus,infile):
+	#a state may be unsat only because of the file constraint
 	#TODO: checkbitmap for necessity
 	logger.debug("Checking if %s is a valid transition.", state)
 	state.preconstrainer.remove_preconstraints()
@@ -59,15 +60,14 @@ def main(command, corpus, testcase, ld_path):
 	s.preconstrainer.preconstrain_file(input_data,s.posix.stdin,True)
 	#initialize the manager
 	simgr = p.factory.simgr(s, save_unsat=True)
-	#a state may be unsat only because of the file constraint
 	#use an id to produce reasonable file names
 	id_counter = 0
-	#while there is a state in active
 	avg_step = (0.0, 0)
 	total_time = time.time()
 	#use a pool of process to limit the total processes spawned
 	with mp.Pool(processes=4) as pool:
 		#explore the concrete path
+		#while there is a state in active
 		while simgr.active:
 			#make sure we're on a reasonable path
 			if len(simgr.active) > 1:
