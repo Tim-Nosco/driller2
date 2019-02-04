@@ -5,10 +5,7 @@ import logging
 from hashlib import md5
 import time
 import multiprocessing as mp
-import argparse, shlex
 
-root_logger = logging.getLogger()
-root_logger.setLevel(logging.WARNING)
 logger = logging.getLogger(name=__name__)
 
 def hook(l=None):
@@ -48,7 +45,7 @@ def main(command, corpus, testcase, ld_path):
 	logger.debug("Creating angr project.")
 	p = angr.Project(command[0], 
 		except_missing_libs=True, 
-		ld_path=(ld_path))
+		ld_path=ld_path)
 	#create the entry state
 	logger.debug("Initializing entry state.")
 	s = p.factory.full_init_state(
@@ -98,43 +95,3 @@ def main(command, corpus, testcase, ld_path):
 		avg_step[0]*avg_step[1], avg_step))
 	print("Total runtime:                %.02fs" % total_time)
 
-def _set_log_level(level):
-	#interpret specified level
-	if not hasattr(logging,level):
-		logger.error("Invalid log level specified: %s", level)
-		logger.error("Using INFO.")
-		level = "INFO"
-	#set the level
-	logger.setLevel(getattr(logging,level))
-
-if __name__ == '__main__':
-	parser = argparse.ArgumentParser('executor.py', 
-		description="Concollic executor emulating driller.")
-
-	parser.add_argument("-v", "--log-level", default="INFO", 
-		help="Set the log level.", dest="level",
-		choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"])
-	
-	parser.add_argument("-l", "--ld-path")
-	
-	parser.add_argument("-i", "--input-file", required=True)
-	
-	parser.add_argument("-o", "--corpus", default="/dev/shm/corpus")
-
-	parser.add_argument("command", nargs=argparse.REMAINDER)
-
-	args=parser.parse_args()
-
-	_set_log_level(args.level)
-
-	try:
-		logger.debug("Creating output directory: %s", args.corpus)
-		os.mkdir(args.corpus)
-	except FileExistsError as e:
-		logger.warning("Corpus folder already exists")
-	main(
-		args.command, 
-		args.corpus, 
-		args.input_file,
-		args.ld_path
-	)

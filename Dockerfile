@@ -10,6 +10,6 @@ WORKDIR /job
 COPY --chown=angr:angr . .
 RUN cd target && tar xvf target.tar.gz
 
-ENTRYPOINT ["python","executor.py"]
-#ENV PATH="${ORIG_PATH}"
-#ENTRYPOINT bash
+# ENTRYPOINT ["python","executor.py"]
+ENV PATH="${ORIG_PATH}"
+ENTRYPOINT bash
