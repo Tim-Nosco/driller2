@@ -35,7 +35,9 @@ def valid_transition(state,counter,corpus,infile):
 			f.write(data)
 	return r
 
-def main(command, corpus, testcase, ld_path):
+def main(command, corpus, testcase, ld_path, input_stream):
+	logger.debug("executor.main(%r, %r, %r, %r, %r)", 
+		command, corpus, testcase, ld_path, input_stream)
 	#read testcase
 	with open(testcase, "rb") as f:
 		input_data = f.read()
@@ -48,20 +50,34 @@ def main(command, corpus, testcase, ld_path):
 		ld_path=ld_path)
 	#create the entry state
 	logger.debug("Initializing entry state.")
-	s = p.factory.full_init_state(
-		mode="tracing",
-		args=command,
-		stdin=angr.SimFileStream
-	)
 	#assert the current testcase
-	s.preconstrainer.preconstrain_file(input_data,s.posix.stdin,True)
+	in_stream_file = angr.SimFileStream(testcase)
+	if input_stream == "___STDIN___":
+		logger.debug("Making stdin symbolic.")
+		s = p.factory.full_init_state(
+			mode="tracing",
+			args=command,
+			stdin=in_stream_file
+		)
+	else:
+		logger.debug("Making symbolic file: %s", testcase)
+		s = p.factory.full_init_state(
+			# mode="tracing",
+			args=command,
+			concrete_fs=False,
+			fs={testcase:in_stream_file}
+		)
+	logger.debug("Constraining %r", in_stream_file)
+	s.preconstrainer.preconstrain_file(input_data,in_stream_file,True)
 	#initialize the manager
+	logger.debug("Creating simulation manager")
 	simgr = p.factory.simgr(s, save_unsat=True)
 	#use an id to produce reasonable file names
 	id_counter = 0
 	avg_step = (0.0, 0)
 	total_time = time.time()
 	#use a pool of process to limit the total processes spawned
+	logger.debug("Allocating process pool")
 	with mp.Pool(processes=4) as pool:
 		#explore the concrete path
 		#while there is a state in active
@@ -81,8 +97,12 @@ def main(command, corpus, testcase, ld_path):
 			#without the stdin constraints
 			for s in simgr.unsat:
 				#this check can be done in an independant process
+				if input_stream=="___STDIN___":
+					in_stream_file = s.posix.stdin
+				else:
+					in_stream_file = s.fs.get(testcase) 
 				pool.apply_async(valid_transition, 
-					(s,id_counter,corpus,s.posix.stdin))
+					(s,id_counter,corpus,in_stream_file))
 				id_counter += 1
 			if simgr.unsat:
 				#throw away the unneeded unsat states

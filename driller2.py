@@ -1,4 +1,4 @@
-import argparse, logging, os
+import argparse, logging, os, shlex
 import executor
 
 logger = logging.getLogger(name=__name__)
@@ -28,7 +28,7 @@ if __name__ == '__main__':
 	parser.add_argument("-l", help="LD_LIBRARY_PATH. "
 		"If the program requires libraries, specify where angr "
 		"can find them. Use : to separate entries. "
-		"(ex. -l /lib:/usr/lib).", dest="ld_path")
+		"(ex. -l /lib:/usr/lib).", default="", dest="ld_path")
 	
 	parser.add_argument("-i", required=True, help="Input folder. "
 		"Specify the AFL queue format folder to read testcases. "
@@ -63,16 +63,38 @@ if __name__ == '__main__':
 		logger.warning("Corpus folder already exists")
 
 	ld_var = args.ld_path.split(":")
+	logger.debug("Processed LD_LIBRARY_PATH=%s", ld_var)
 
+	if args.instream != "___AUTO___":
+		#its a static filename
+		instream = args.instream
+	elif "___FILE___" in args.command:
+		#its a mutating filename
+		instream = "___FILE___"
+	else:
+		#its stdin
+		instream = "___STDIN___"
+	logger.debug("Detected input stream: %s", instream)
+
+	#TODO start afl node, respect instream
+
+	#maybe this isn't required? 
+	#for each testcase in queue folder, run executor.main
 	regression_tests = []
 	for p in os.listdir(args.input_folder):
 		p = os.path.join(args.input_folder, p)
 		if os.path.isfile(p):
 			regression_tests.append(p)
 
+	#TODO loop
+	logger.debug("Patching command: %s", args.command)
+	command = shlex.split(' '.join(args.command)
+		.replace("___FILE___", instream))
+	logger.debug("Post patch: %s", command)
 	executor.main(
-		args.command, 
+		command, 
 		args.corpus, 
 		regression_tests[0],
-		ld_var
+		ld_var,
+		instream
 	)
