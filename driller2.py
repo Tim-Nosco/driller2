@@ -14,8 +14,7 @@ def _set_log_level(level):
 
 if __name__ == '__main__':
 	logger = logging.getLogger()
-	others = ["angr", "ana", "cle", "claripy"]
-	for o in others:
+	for o in ["angr", "ana", "cle", "claripy"]:
 		logging.getLogger(o).setLevel(logging.WARNING)
 
 	parser = argparse.ArgumentParser('executor.py', 
@@ -65,14 +64,23 @@ if __name__ == '__main__':
 	ld_var = args.ld_path.split(":")
 	logger.debug("Processed LD_LIBRARY_PATH=%s", ld_var)
 
+	command = ' '.join(args.command)
 	if args.instream != "___AUTO___":
-		#its a static filename
+		#its a static filename or mutating filename
+		# if user specifies ___FILE___ but ___FILE___
+		# is not in the command string, unexpected
+		# behavior may occur because .replace is used
+		# later on
+		if args.instream == "___FILE___" and 
+						"___FILE___" not in command:
+			logger.warning("-f ___FILE___ specified "
+				"but does not appear in the command.")
 		instream = args.instream
-	elif "___FILE___" in args.command:
+	elif "___FILE___" in command:
 		#its a mutating filename
 		instream = "___FILE___"
 	else:
-		#its stdin
+		#default stdin
 		instream = "___STDIN___"
 	logger.debug("Detected input stream: %s", instream)
 
@@ -87,9 +95,8 @@ if __name__ == '__main__':
 			regression_tests.append(p)
 
 	#TODO loop
-	logger.debug("Patching command: %s", args.command)
-	command = shlex.split(' '.join(args.command)
-		.replace("___FILE___", instream))
+	logger.debug("Patching command: %s", command)
+	command = shlex.split(command.replace("___FILE___", instream))
 	logger.debug("Post patch: %s", command)
 	executor.main(
 		command, 
